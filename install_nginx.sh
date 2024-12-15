@@ -38,6 +38,10 @@ check_nginx_page() {
 
 # Function to check if Nginx is running
 check_nginx_status() {
+
+    # Run systemctl start
+    sudo systemctl start nginx
+
     # Run systemctl status and grep for the specific status line
     if sudo systemctl status nginx | grep -q "Active: active (running)"; then
         echo -e "${GREEN}✔ Nginx service is running successfully!${NC}"
@@ -45,6 +49,20 @@ check_nginx_status() {
     else
         echo -e "${RED}✘ Nginx is not running or has an issue.${NC}"
         return 1
+    fi
+}
+
+copy_wordpress_config() {
+    local wordpress_conf_template="wordpress.conf"
+    local nginx_conf_path="/etc/nginx/conf.d/wordpress.conf"
+
+    if [[ -f "$wordpress_conf_template" ]]; then
+        echo -e "${YELLOW}Configuring Nginx for WordPress...${NC}"
+        sed "s|<url>|$url|g" "$wordpress_conf_template" | sudo tee "$nginx_conf_path" > /dev/null
+        echo -e "${GREEN}✔ Nginx configuration for WordPress updated at $nginx_conf_path.${NC}"
+    else
+        echo -e "${RED}✘ Template file $wordpress_conf_template not found.${NC}"
+        exit 1
     fi
 }
 
@@ -78,6 +96,9 @@ main() {
         # Wait a moment to ensure service has time to start
         sleep 2
 
+        # Copy the wordpress configuration file 
+        copy_wordpress_config "$url"
+
         # Check Nginx service status
         if check_nginx_status; then
             # Check Nginx page
@@ -100,4 +121,3 @@ main() {
 
 # Run the main function
 main "$@"
-
