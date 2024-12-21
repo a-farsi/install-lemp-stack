@@ -39,12 +39,17 @@ ensure_mariadb_running() {
 # Function to secure MariaDB installation in silent mode
 secure_mariadb_silent() {
     echo -e "${YELLOW}Securing MariaDB installation...${NC}"
+    echo -e "${db_name} db_name{NC}" 
+    echo "${db_user}" 
+    echo -e "${db_password} password ....${NC}"
+
 
     # Define root password
-    local root_password="your_new_password"
+    #AFAlocal root_password="your_new_password"
 
     # Run SQL commands to secure MariaDB
-    sudo mariadb -u root -pyour_new_password<<EOF
+    #AFAsudo mariadb -u root -pyour_new_password<<EOF
+    sudo mariadb -u root -p'$root_password'<<EOF
 -- For MariaDB 10.4+ (recommended syntax)
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${root_password}';
 
@@ -72,9 +77,9 @@ EOF
 
 # Function to create a database and user
 setup_database() {
-    local db_name="afadb"
-    local db_user="afauser"
-    local db_password="afapwd"
+    #AFA local db_name="afadb"
+    #AFA local db_user="afauser"
+    #AFA local db_password="afapwd"
 
     echo -e "${YELLOW}Creating database '${db_name}' and user '${db_user}' with specified privileges...${NC}"
 

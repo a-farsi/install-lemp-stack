@@ -14,7 +14,7 @@ check_nginx_page() {
         echo "Usage: ./install-nginx-script.sh <URL>"
         exit 1
     fi
-    local url="$1"
+    #AFA local url="$1"
 
     # Use curl with -I (head) to get only headers
     local http_response=$(curl -sI "$url")
@@ -75,7 +75,7 @@ main() {
         exit 1
     fi
 
-    local url="$1"
+    #AFA local url="$1"
 
     # Update package lists
     echo -e "${YELLOW}Updating package lists...${NC}"
