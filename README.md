@@ -11,7 +11,7 @@ Il est nécessaire de créer un compte sur la plateforme ClouDNS afin de bénéf
 <p align="center">
 <img src="./figures/figure1.png" width=100%>
 </p>
-<p align="center">
+<p align="center" style="font-weight: bold;">
 Figure 1: création d’un enregistrement de type A
 </p>
 
@@ -20,7 +20,7 @@ La figure 2 illustre l'enregistrement ClouDNS créé, intitulé **serveurnginx.a
 <p align="center">
 <img src="./figures/figure2.png" width=100%>
 </p>
-<p align="center">
+<p align="center" style="font-weight: bold;">
 Figure 2: illustration des alias de type A et de type NS
 </p>
 
@@ -39,7 +39,7 @@ Voici le résultat de la commande :
 <p align="center">
 <img src="./figures/figure3.png" width=100%>
 </p>
-<p align="center">
+<p align="center" style="font-weight: bold;">
 Figure-3: la sortie de la commande qui affiche l’état du serveur Nginx
 </p>
 
@@ -48,7 +48,7 @@ Il est également possible de s'assurer que le serveur affiche correctement la p
 <p align="center">
 <img src="./figures/figure4.png" width=100%>
 </p>
-<p align="center">
+<p align="center" style="font-weight: bold;">
 Figure 4: affichage de la page d’acceuil du serveur Nginx
 </p>
 
@@ -123,7 +123,7 @@ Voici le résultat de cette commande :
 <p align="center">
 <img src="./figures/figure5.png" width=100%>
 </p>
-<p align="center">
+<p align="center" style="font-weight: bold;">
 Figure 5: la sortie de la commande qui affiche l’état du service MariaDB
 </p>
 
@@ -144,7 +144,7 @@ sudo mariadb -u root -p
 <p align="center">
 <img src="./figures/figure6.png" width=100%>
 </p>
-<p align="center">
+<p align="center" style="font-weight: bold;">
 Figure 6: la sortie qui montre la connection à la BD mariadb
 </p>
 
@@ -181,7 +181,7 @@ Nous devons modifier le fichier de configuration **_/etc/php/7.4/fpm/php.ini_** 
 <p align="center">
 <img src="./figures/figure7.png" width=100%>
 </p>
-<p align="center">
+<p align="center" style="font-weight: bold;">
 Figure 7: afficher la version de PHP installée
 </p>
 
@@ -222,21 +222,21 @@ define( 'DB_HOST', 'localhost' );
 ```
 
 6. ### Lancement de la pile LEMP
-Pour finir l’installation de Wordpress, nous tapant l’url **_serveurnginx.afa.ip-ddns.com/_** dans la barre d’adresse du navigation
+Pour finaliser l’installation de WordPress, nous saisissons l’URL suivante dans la barre d’adresse du navigateur : **_serveurnginx.afa.ip-ddns.com/_** 
 
 
 <p align="center">
 <img src="./figures/figure8.png" width=100%>
 </p>
-<p align="center">
-Figure 8: La première page de configuration de WordPress
+<p align="center" font-weight="bold">
+ Figure 8: La première page de configuration de WordPress
 </p>
 
 
 <p align="center">
 <img src="./figures/figure9.png" width=100%>
 </p>
-<p align="center">
+<p align="center" style="font-weight: bold;">
 Figure 9: Page à remplir pour finit la configuration
 </p>
 
@@ -245,60 +245,93 @@ Figure 9: Page à remplir pour finit la configuration
 <p align="center">
 <img src="./figures/figure10.png" width=100%>
 </p>
-<p align="center">
+<p align="center" style="font-weight: bold;">
 Figure 10: Page de la fin de configuration
 </p>
+
+Pour accéder au tableau de bord, il suffit de saisir directement l’URL suivante **_serveurnginx.afa.ip-ddns.com/wp-admin** : 
 
 <p align="center">
 <img src="./figures/figure11.png" width=100%>
 </p>
-<p align="center">
-Figure 11: page d'acceuil de WordPress
+<p align="center" style="font-weight: bold;">
+Figure 11: Widgets par défaut du tableau de borad
 </p>
 
 7. ### Sécurisation du site
+Afin de garantir la sécurité des échanges sur notre site WordPress et de protéger les données de nos utilisateurs, nous avons opté pour la solution **Let's Encrypt**. 
+Ce service gratuit et automatisé permet de mettre en place facilement un certificat SSL, indispensable pour activer le protocole HTTPS. 
+Grâce à Let's Encrypt, les données transitant entre notre serveur et les navigateurs des internautes sont chiffrées, renforçant ainsi la confidentialité et l'intégrité des informations.
 
-Pour activer le protocol https sur notre site, nous devons installer sur notre systeme le client **_Certbot_** de **_Let's Encrypt_**:
+Afin d’activer le protocole HTTPS sur notre site, il est nécessaire d’installer sur notre système le client  **_Certbot_** proposé par **_Let's Encrypt_** comme suit:
 
 ```
 sudo apt-get install python3-certbot-nginx -y
 ```
-En suite, nous éxecutons la commande : 
+En suite, pour obtenir et installer automatiquement le certificat SSL, nous éxecutons la commande : 
 ```
 sudo certbot --nginx -d serveurnginx.afa.ip-ddns.com
 ```
-
-Malheuresement, un message d'erreur s'est affiché 
+Si vous produisez un nombre excessif de certificats SSL via Let's Encrypt au cours d'une même journée, un message d'erreur vous informera que vous avez excédé le quota autorisé. Ce message spécifiera également la date à partir de laquelle il vous sera possible de soumettre une nouvelle demande. Cette restriction a été instaurée afin d'assurer une répartition équitable des ressources entre les utilisateurs et de prévenir tout usage abusif. La figure 12 montre le message affiché dans ce cas là.
 
 <p align="center">
 <img src="./figures/figure12.png" width=100%>
 </p>
-<p align="center">
-Figure 12: lMessage de dépassement du nombre de certificats généré par jour 
+<p align="center" style="font-weight: bold;">
+Figure 12: Message de dépassement du nombre de certificats généré par jour
 </p>
 
+Pour juste simuler la connexion sicurisée,  en testant la configuration sans réellement obtenir un nouveau certificat. Cette alternative est utile pour vérifier si la configuration est correcte avant de générer un certificat définitif.
+```
+sudo certbot --nginx –test-cert -d serveurnginx.afa.ip-ddns.com
+```
+
+
+
+Voici l’interaction générée par cette commande, qui nous invite à fournir une adresse électronique et à accepter les conditions d’utilisation :
 
 <p align="center">
 <img src="./figures/figure13.png" width=100%>
 </p>
-<p align="center">
-Figure 13: la sortie qui montre la connection à la BD mariadb
+<p align="center" style="font-weight: bold;">
+Figure 13: Dmande de saisir l'adresse mail et accepter les conditions d'utilisation
 </p>
 
+Finalement, cette configuration nous permet d’établir une connexion HTTPS sécurisée à notre site.
 
 <p align="center">
 <img src="./figures/figure14.png" width=100%>
 </p>
-<p align="center">
-Figure 14: la sortie qui montre la connection à la BD mariadb
+<p align="center" style="font-weight: bold;">
+Figure 14: Connexion au site avec le protocole https
 </p>
 
+8. ### Sauvegarde de la base de données, du site, des fichiers logs et de configurations
+
+Pour sauvegarder la base de données nous exécution la commande suivante:
+```
+mysqldump -u afauser -pafapwd afadb > ./mariadb_backup.sql
+```
+
+Pour effectuer une sauvegarde complète du site :
+```
+tar -czvf ./magento_files_backup.tar.gz /var/www/html/wordpress
+```
+
+Voici une capture d’écran illustrant le contenu du répertoire contenant les fichiers relatifs au certificat SSL généré par Let’s Encrypt, obtenus après une simple simulation :
 
 <p align="center">
 <img src="./figures/figure15.png" width=100%>
 </p>
-<p align="center">
-Figure 15: la sortie qui montre la connection à la BD mariadb
+<p align="center" style="font-weight: bold;">
+Figure 15: Contenu du répértoire etc/letsencrypt/serveugnginx.afa.ip-ddns.com
 </p>
 
+Nous avons dû attendre la date limite pour relancer la commande de génération du certificat. Voici la capture d’écran correspondante :
 
+<p align="center">
+<img src="./figures/figure16.png" width=100%>
+</p>
+<p align="center" style="font-weight: bold;">
+Figure 15: Contenu du répértoire etc/letsencrypt/serveugnginx.afa.ip-ddns.com
+</p>
