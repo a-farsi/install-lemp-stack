@@ -1,7 +1,11 @@
 # install-lemp-stack
-L'objectif de ce TP est d'installer une pile LEMP (Linux, Nginx, MariaDB, PHP). Cette configuration permet de déployer des pages web dynamiques ainsi que des applications web développées en PHP.
+L'objectif de ce mini-projet est d'installer une pile LEMP (Linux, Nginx, MariaDB, PHP). Cette configuration permet de déployer des pages web dynamiques ainsi que des applications web développées en PHP.
 
 Les étapes ci-dessous décrivent de manière détaillée l'installation d'une pile LEMP sur un serveur Ubuntu.
+
+Il est possible d'installer l'ensemble de la pile LEMP en exécutant le script "install-all-in-one.sh" et en fournissant les paramètres appropriés dans le fichier "app.properties". 
+
+Si vous privilégiez l'installation séparée de chaque composant de la pile, il convient d'exécuter les scripts correspondants selon l'ordre indiqué ci-dessous.
 
 1. ### Création d'un nom de domaine
 
@@ -104,6 +108,11 @@ server {
 }
 ```
 
+#### Automatiser l'installation de Nginx
+L'installation de Nginx peut être effectuée en exécutant le script "install_nginx.sh". 
+
+Il est impératif de fournir le paramètre <URL> obtenu lors de la création du nom de domaine sur la plateforme CloudDNS. 
+
 3. ### Installation de la base de données MariaDB
 Pour installer la base de données MariaDB, nous exécutons la commande suivante :
 
@@ -164,6 +173,10 @@ grant SELECT, INSERT, UPDATE, CREATE, INDEX, ALTER, CREATE on afadb.* to 'afause
 
 Une fois la configuration de la base de données terminée, il convient d’exécuter la commande **_exit_** afin de se déconnecter et de revenir à l’invite utilisateur.
 
+#### Automatiser l'installation de la BD MariaDB :
+L'installation de la base de données MariaDB peut être effectuée en exécutant le script "install_mariadb.sh".
+
+Le script de sécurisation n'a pas été exécuté en mode interactif comme indiqué ci-dessus; nous l'avons automatisé en implémentant chaque phase afin qu'elle s'exécute en mode silencieux.
 
 4. ### Installation de PHP
 
@@ -177,7 +190,7 @@ Tester la version installer de PHO avec la commande
 ```
 php -v
 ```
-Nous devons modifier le fichier de configuration **_/etc/php/7.4/fpm/php.ini_** en modifiant les lignes suivantes :
+
 <p align="center">
 <img src="./figures/figure7.png" width=100%>
 </p>
@@ -185,6 +198,20 @@ Nous devons modifier le fichier de configuration **_/etc/php/7.4/fpm/php.ini_** 
 Figure 7: afficher la version de PHP installée
 </p>
 
+Nous devons modifier le fichier de configuration **_/etc/php/7.4/fpm/php.ini_** en modifiant les lignes suivantes :
+
+```
+cgi.fix_pathinfo=0
+upload_max_filesize=128M
+post_max_size=128M
+memory_limit=512M
+max_execution_time=120
+```
+
+#### Automatiser l'installation de PHP :
+L'installation PHP peut être effectuée en exécutant le script "install_php.sh".
+
+Il est nécessaire de spécifier comme paramètre la version de PHP à installer en fonction de la distribution Ubuntu utilisée.
 
 5. ### Installation de WordPress
 
@@ -220,6 +247,9 @@ define( 'DB_USER', 'afauser' );
 define( 'DB_PASSWORD', 'afapwd' );
 define( 'DB_HOST', 'localhost' );
 ```
+
+#### Automatiser l'installation de WordPress :
+L'installation WordPress peut être effectuée en exécutant le script "install_wordpress.sh".
 
 6. ### Lancement de la pile LEMP
 Pour finaliser l’installation de WordPress, nous saisissons l’URL suivante dans la barre d’adresse du navigateur : **_serveurnginx.afa.ip-ddns.com/_** 
@@ -335,3 +365,42 @@ Nous avons dû attendre la date limite pour relancer la commande de génération
 <p align="center" style="font-weight: bold;">
 Figure 15: Contenu du répértoire etc/letsencrypt/serveugnginx.afa.ip-ddns.com
 </p>
+
+9. ### Points clés pour gérer efficacement un site WordPress
+
+Dans un environnement de production nous devons prendre en considération les points suivants:
+
+1. #### Choix de la machine virtuelle:
+Sélectionnez une machine virtuelle disposant d’une capacité RAM suffisante pour supporter les charges de travail prévues. Si vous choisissez d’héberger votre base de données sur votre instance, utilisez un outil dédié comme WP-Optimize, spécifiquement conçu pour WordPress. Cet outil permet de réaliser des tâches de maintenance sur la base de données, telles que la suppression des données inutiles, l’optimisation des tables, etc...
+Si vous préférez utiliser un service de base de données managé AWS, il est recommandé de mettre en place un système de mise en cache, comme Amazon ElastiCache pour Amazon RDS, ou Amazon DynamoDB Accelerator (DAX) dans le cas d’une base de données NoSQL.
+
+2. #### Gestion des certificats SSL
+Dans notre cas, nous avons utilisé _Let's Encrypt_ pour générer et gérer les certificats SSL. Si vous souhaitez une analyse détaillée de la configuration _SSL/TLS_ de votre site, il est possible d’utiliser un outil on-premises tel que _SSL Labs_.
+
+Si vous optez pour une solution managée sur le cloud AWS, vous pouvez utiliser le service AWS Key Management Service (KMS) pour gérer vos clés et certificats en toute sécurité.
+
+3. #### Configuration du reverse-proxy et sécurité
+Configurez correctement votre reverse-proxy afin de gérer efficacement plusieurs sites en simultané. 
+
+Assurez-vous que chaque site dispose d’un certificat SSL valide et de permissions adaptées. Redirigez toutes les requêtes HTTP vers HTTPS afin de renforcer la sécurité des communications.
+
+4. #### Optimisation des performances
+Intégrez un CDN (Content Delivery Network) tel qu’Amazon CloudFront pour réduire le temps de chargement grâce à la distribution des contenus depuis des serveurs géographiquement proches des utilisateurs.
+
+Compressez les images sans perte de qualité à l’aide d’outils comme _Smush_ ou _Imagify_.
+
+Minifiez les fichiers CSS et JavaScript pour améliorer le temps de rendu des pages.
+Surveillez les performances globales de votre site avec des outils d’analyse tels que Google PageSpeed Insights ou GTmetrix, afin d’identifier et de corriger les éventuelles faiblesses.
+
+5. #### Sauvegarde des données
+Planifiez des sauvegardes automatiques régulières pour votre site et votre base de données à l’aide de solutions adaptées. Par exemple :
+
+UpdraftPlus pour des sauvegardes on-premises.
+
+AWS Backup pour les environnements cloud.
+
+Stockez ces sauvegardes sur des services externes comme AWS S3, qui offre un stockage durable, scalable et sécurisé.
+
+6. #### Mises à jour et gestion des configurations
+Maintenez à jour WordPress, ses thèmes et plugins pour bénéficier des correctifs de sécurité et des nouvelles fonctionnalités. Dans un environnement cloud AWS, des outils comme _AWS Systems Manager_ peuvent être utilisés pour automatiser et simplifier la gestion des mises à jour et des configurations.
+
